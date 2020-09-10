@@ -15,6 +15,8 @@ public class Decrypter {
 
         String newCode = dSwap(ddigitOne,ddigitTwo,ddigitThree,ddigitFour);
 
+        System.out.printf("\nDecrypted Code: %s\n\n", newCode);
+
         return newCode;
     }
 

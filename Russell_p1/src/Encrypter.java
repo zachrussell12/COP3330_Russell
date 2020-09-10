@@ -1,43 +1,5 @@
-import java.util.Scanner;
-
 public class Encrypter{
-    public static void main(String [] args){
 
-        Scanner input = new Scanner(System.in);
-        Scanner input2 = new Scanner(System.in);
-        String code = "";
-        String encryptedCode = "";
-        String decryptedCode = "";
-        String choice = "";
-
-        while(!choice.equals("X")) {
-            System.out.println("Would you like to encrypt, decrypt, or exit? (Enter E, D, or X)");
-
-            choice = input2.next();
-
-            switch (choice) {
-                case "E" -> {
-                    System.out.println("\nEnter a string of 4 numbers: \n");
-                    code = input.next();
-                    encryptedCode = encrypt(code);
-                    System.out.printf("\nHere is the encrypted code: %s \n\n", encryptedCode);
-                }
-                case "D" -> {
-                    Decrypter dCode = new Decrypter();
-                    System.out.println("\nEnter a string of 4 numbers: \n");
-                    code = input.next();
-                    decryptedCode = dCode.decrypt(code);
-
-                    System.out.printf("\nHere is the decrypted code: %s \n\n", decryptedCode);
-
-                }
-                case "X" -> System.out.println("---------Goodbye---------");
-                default -> System.out.println("\nInvalid choice please try your entry again\n");
-            }
-
-        }
-
-    }
     public static String encrypt(String code){
         String nums = code;
         String newCode = "";
@@ -54,6 +16,8 @@ public class Encrypter{
         digitFour = (digitFour + 7)%10;
 
         newCode = swap(digitOne, digitTwo, digitThree, digitFour);
+
+        System.out.printf("Encrypted Code: %s", newCode);
 
         return newCode;
     }
