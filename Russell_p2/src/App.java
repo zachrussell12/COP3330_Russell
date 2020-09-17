@@ -18,16 +18,25 @@ public class App {
         displayBmiStatistics(bmiData);
     }
 
+    private static void displayBmiStatistics(ArrayList<BodyMassIndex> bmiData) {
+    }
+
+    private static void displayBmiInfo(BodyMassIndex bmi) {
+        System.out.printf("Here is your BMI from your given height and weight: %f\n\n", bmi);
+    }
+    
+
     public static boolean moreInput(){
         System.out.println("Would you like to enter more data? Enter Y or N: ");
 
         Scanner input = new Scanner(System.in);
         String choice = input.next();
 
-        if(choice == "Y"){
+        if(choice.equalsIgnoreCase("Y")){
             return true;
         }
-        else if(choice == "N"){
+        else if(choice.equalsIgnoreCase("N")){
+            System.out.println("Goodbye");
             return false;
         }
         else{
