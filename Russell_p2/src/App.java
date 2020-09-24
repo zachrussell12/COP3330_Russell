@@ -19,12 +19,15 @@ public class App {
     }
 
     private static void displayBmiStatistics(ArrayList<BodyMassIndex> bmiData) {
+
+
     }
 
     private static void displayBmiInfo(BodyMassIndex bmi) {
-        System.out.printf("Here is your BMI from your given height and weight: %f\n\n", bmi);
+        System.out.printf("Body Mass Index is: %.2f. ", bmi.getBmi());
+        bmi.bmiCat(bmi.getBmi());
     }
-    
+
 
     public static boolean moreInput(){
         System.out.println("Would you like to enter more data? Enter Y or N: ");
@@ -36,28 +39,45 @@ public class App {
             return true;
         }
         else if(choice.equalsIgnoreCase("N")){
-            System.out.println("Goodbye");
             return false;
         }
         else{
-            System.out.println("Invalid Option...Exiting");
-            return false;
+            System.out.println("Invalid Option");
+            return moreInput();
         }
     }
 
     public static double getUserHeight(){
-        System.out.println("Please enter your height in inches: ");
+        Integer number;
         Scanner heightInput = new Scanner(System.in);
-        double height = Integer.parseInt(heightInput.next());
+        System.out.println("Please enter your height in inches: ");
+        number = heightInput.nextInt();
 
-        return height;
+        if(number < 0){
+
+            System.out.println("Invalid height entered.");
+
+            return getUserHeight();
+        }
+
+            return number;
+
     }
 
     public static double getUserWeight(){
+        int number;
         System.out.println("Please enter your weight in inches: ");
         Scanner weightInput = new Scanner(System.in);
-        double height = Integer.parseInt(weightInput.next());
 
-        return height;
+        number = weightInput.nextInt();
+
+        if(number < 0){
+
+            System.out.println("Invalid weight entered.");
+
+            return getUserWeight();
+        }
+
+        return number;
     }
 }
