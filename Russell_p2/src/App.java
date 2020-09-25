@@ -20,6 +20,9 @@ public class App {
 
     private static void displayBmiStatistics(ArrayList<BodyMassIndex> bmiData) {
 
+        for(BodyMassIndex bmi : bmiData){
+            System.out.println(Double.valueOf(bmi.getBmi()));
+        }
 
     }
 
