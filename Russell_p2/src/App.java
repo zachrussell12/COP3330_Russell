@@ -19,16 +19,24 @@ public class App {
     }
 
     private static void displayBmiStatistics(ArrayList<BodyMassIndex> bmiData) {
-
+        double sum = 0;
+        int counter = 0;
+        double avg;
         for(BodyMassIndex bmi : bmiData){
-            System.out.println(Double.valueOf(bmi.getBmi()));
+            sum += bmi.getBmi();
+            counter++;
         }
+
+        avg = sum / counter;
+
+        System.out.printf("Here is the sum of all the BMI's entered: %.2f", avg);
 
     }
 
     private static void displayBmiInfo(BodyMassIndex bmi) {
         System.out.printf("Body Mass Index is: %.2f. ", bmi.getBmi());
-        bmi.bmiCat(bmi.getBmi());
+        String cat = bmi.bmiCat(bmi.getBmi());
+        System.out.println(cat);
     }
 
 
@@ -51,7 +59,7 @@ public class App {
     }
 
     public static double getUserHeight(){
-        Integer number;
+        int number;
         Scanner heightInput = new Scanner(System.in);
         System.out.println("Please enter your height in inches: ");
         number = heightInput.nextInt();
@@ -69,7 +77,7 @@ public class App {
 
     public static double getUserWeight(){
         int number;
-        System.out.println("Please enter your weight in inches: ");
+        System.out.println("Please enter your weight in pounds: ");
         Scanner weightInput = new Scanner(System.in);
 
         number = weightInput.nextInt();
