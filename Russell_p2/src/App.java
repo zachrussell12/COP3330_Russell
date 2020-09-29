@@ -59,10 +59,10 @@ public class App {
     }
 
     public static double getUserHeight(){
-        int number;
+        double number;
         Scanner heightInput = new Scanner(System.in);
         System.out.println("Please enter your height in inches: ");
-        number = heightInput.nextInt();
+        number = heightInput.nextDouble();
 
         if(number < 0){
 
@@ -76,11 +76,11 @@ public class App {
     }
 
     public static double getUserWeight(){
-        int number;
+        double number;
         System.out.println("Please enter your weight in pounds: ");
         Scanner weightInput = new Scanner(System.in);
 
-        number = weightInput.nextInt();
+        number = weightInput.nextDouble();
 
         if(number < 0){
 
