@@ -1,16 +1,5 @@
-public abstract class Shape2D {
-
-    public abstract String getArea();
+public abstract class Shape2D extends Shape {
+    public abstract double getArea();
 }
 
-/*class Square extends Shape {
-    public Square(int i) {
-        super();
-    }
 
-    @Override
-    public int getArea(int i) {
-        int area = i * i;
-        return area;
-    }
-}*/
