@@ -1,7 +1,9 @@
 public class Cube extends Shape3D {
 
-    public Cube(int i) {
-        getName();
+    private final double side;
+
+    public Cube(double i) {
+        this.side = i;
     }
 
     public String getName(){
@@ -9,11 +11,11 @@ public class Cube extends Shape3D {
     }
 
     public double getArea(){
-        return 5.0;
+        return 6*(this.side*this.side);
     }
 
     public double getVolume(){
-        return 5.0;
+        return this.side*this.side*this.side;
     }
 
 
