@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Scanner;
 import static java.lang.System.exit;
 
@@ -5,10 +6,10 @@ public class App {
     public static void main (String[] args){
 
         Scanner userInput = new Scanner(System.in);
-        int menuChoice = 0;
+        String menuChoice = "";
 
 
-        while(menuChoice != 3){
+        while(!menuChoice.contains("3")){
 
             System.out.println("Main Menu");
             System.out.println("---------");
@@ -16,24 +17,26 @@ public class App {
             System.out.println("\n1) create a new list\n2) load an existing list\n3) quit\n");
             System.out.print(">");
 
-            menuChoice = userInput.nextInt();
+            menuChoice = userInput.next();
 
-            if(menuChoice == 1){
+            if(menuChoice.contains("1")){
                 System.out.println("new task list has been created");
                 TaskList list = new TaskList();
                 list.menu();
             }
-            else if(menuChoice == 2){
+            else if(menuChoice.contains("2")){
                 System.out.println("Enter the file name to load (including the .txt extension): ");
                 Scanner userInputFile = new Scanner(System.in);
                 String fileName = userInputFile.nextLine();
                 TaskList loadedList = new TaskList();
+                File listFile = new File(fileName);
+                loadedList.loadList(listFile);
             }
-            else if(menuChoice == 3){
+            else if(menuChoice.contains("3")){
                 break;
             }
             else{
-                exit(0);
+                System.out.println("Invalid choice made. Please try again\n");
             }
 
 

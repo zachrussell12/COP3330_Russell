@@ -1,17 +1,16 @@
-import java.util.Date;
 
 public class TaskItem {
 
     private String name;
     private String dueDate;
     private String description;
-    private boolean isCompleted;
+    private boolean isCompleted = false;
 
-    public TaskItem(String inputName, String inputDueDate, String inputDescription) {
+    public TaskItem(String inputName, String inputDueDate, String inputDescription, boolean completion) {
         this.name = inputName;
         this.dueDate = inputDueDate;
         this.description = inputDescription;
-        this.isCompleted = false;
+        this.isCompleted = completion;
 
     }
 
@@ -38,8 +37,13 @@ public class TaskItem {
         this.description = description;
     }
 
+    public String toStringFile() {
+        return "[" + dueDate + "]\n" + name + "\n" + description;
+    }
+
     @Override
     public String toString() {
         return "[" + dueDate + "] " + name + ": " + description;
     }
+
 }
