@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,16 +38,63 @@ public class TaskList {
                 addItem(this.taskList);
             }
             else if(menuChoice.equalsIgnoreCase("3")){
-                editItem(this.taskList);
+                int choice;
+                viewList(this.taskList);
+                System.out.println("Which task will you edit?");
+                Scanner taskChoice = new Scanner(System.in);
+                if(!taskChoice.hasNextInt()){
+                    System.out.println("Invalid input made.\nNo task marked as completed.");
+                    return;
+                }else {
+                    choice = taskChoice.nextInt();
+                    editItem(this.taskList, choice);
+                }
             }
             else if(menuChoice.equalsIgnoreCase("4")){
-                removeItem(this.taskList);
+                viewList(taskList);
+                int choice;
+                System.out.println("Which task will you remove?");
+                Scanner taskChoice2 = new Scanner(System.in);
+                if(!taskChoice2.hasNextInt()){
+                    System.out.println("Invalid input made.\nNo task removed.");
+
+                }else {
+                    choice = taskChoice2.nextInt();
+                    removeItem(this.taskList, choice);
+                }
             }
             else if(menuChoice.equalsIgnoreCase("5")){
-                markCompleted(this.taskList);
+                int counter = viewUncompletedList(this.taskList);
+                int choice;
+                if(counter == 0){System.out.println("No task marked as completed.");}
+                else {
+                    System.out.println("Which task will you mark as completed?");
+                    Scanner completeChoice = new Scanner(System.in);
+                    if (!completeChoice.hasNextInt()) {
+                        System.out.println("Invalid input made.\nNo task marked as completed.");
+                        return;
+                    } else {
+                        choice = completeChoice.nextInt();
+                        markCompleted(this.taskList, choice);
+                    }
+                }
             }
             else if(menuChoice.equalsIgnoreCase("6")){
-                unmarkCompleted(this.taskList);
+                int choice;
+                int counter = viewCompletedList(this.taskList);
+                if(counter == 0){System.out.println("No task unmarked as completed.");}
+                else {
+                    System.out.println("Which task will you unmark as completed?");
+                    Scanner unCompleteChoice = new Scanner(System.in);
+                    if (!unCompleteChoice.hasNextInt()) {
+                        System.out.println("Invalid input made.\nNo task unmarked as completed.");
+                        return;
+                    }
+                    else {
+                        choice = unCompleteChoice.nextInt();
+                        unmarkCompleted(this.taskList, choice);
+                    }
+                }
             }
             else if(menuChoice.equalsIgnoreCase("7")){
                 saveList(this.taskList);
@@ -79,7 +125,7 @@ public class TaskList {
         }
     }
 
-    public void viewUncompletedList(ArrayList<TaskItem> taskList){
+    public int viewUncompletedList(ArrayList<TaskItem> taskList){
         int counter = 0;
         System.out.println("Uncompleted Tasks");
         System.out.println("-------------\n");
@@ -91,9 +137,11 @@ public class TaskList {
         }
 
         if(counter == 0){System.out.println("You currently have no uncompleted tasks");}
+
+        return counter;
     }
 
-    public void viewCompletedList(ArrayList<TaskItem> taskList){
+    public int viewCompletedList(ArrayList<TaskItem> taskList){
         int counter = 0;
         System.out.println("Completed Tasks");
         System.out.println("-------------\n");
@@ -106,9 +154,11 @@ public class TaskList {
         }
 
         if(counter == 0){System.out.println("You currently have no completed tasks");}
+
+        return counter;
     }
 
-    public void addItem(ArrayList<TaskItem> taskList){
+    public void addItem(ArrayList<TaskItem> taskList) {
         String taskName;
         String dueDate;
         String description;
@@ -117,141 +167,168 @@ public class TaskList {
         Scanner nameInput = new Scanner(System.in);
         taskName = nameInput.nextLine();
 
-        if(!(taskName.length() >= 1)){
+        if (!(taskName.length() >= 1)) {
             System.out.println("WARNING: Task Title must be at least 1 character long. Task not created.");
             return;
         }
 
         System.out.println("Task description: ");
-        Scanner descriptionInput = new Scanner (System.in);
+        Scanner descriptionInput = new Scanner(System.in);
         description = descriptionInput.nextLine();
 
 
         System.out.println("Task due date (YYYY-MM-DD): ");
         Scanner dueDateInput = new Scanner(System.in);
         dueDate = dueDateInput.nextLine();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-        //Date object not able to parse into format ****
+        if (!(dueDate.matches("....-..-.."))) {
+            System.out.println("Date is in improper format.\nRemember to include dashes and use proper YYYY-MM-DD formatting.\nTask not created.");
+            return;
+        }
+
+        Date currentDate = new Date();
+        Date inputDate = null;
         try {
-            Date currentDate = format.parse(dueDate);
+            inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(dueDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        if(!(dueDate.matches("....-..-.."))){
-            System.out.println("Date is in improper format. Remember to include dashes and use proper YYYY-MM-DD formatting.");
+        if(currentDate.after(inputDate)){
+            System.out.println("Date is in the past. Task not created.");
+            return;
+        }
+        if(dueDate.charAt(6) == '3' || dueDate.charAt(6) == '4' || dueDate.charAt(6) == '5' || dueDate.charAt(6) == '6' || dueDate.charAt(6) == '7' || dueDate.charAt(6) == '8' || dueDate.charAt(6) == '9'){
+            System.out.println("Date is not valid. Task not created.");
+            return;
         }
 
-        System.out.println(format.format(dueDate));
 
         TaskItem newItem = new TaskItem(taskName, dueDate, description, false);
         taskList.add(newItem);
     }
 
-    public void editItem(ArrayList<TaskItem> taskList){
+    public void editItem(ArrayList<TaskItem> taskList, int choice){
 
-        int choice;
         String taskName;
         String dueDate;
         String description;
 
-        viewList(taskList);
-
-
-        System.out.println("Which task will you edit?");
-        Scanner input = new Scanner(System.in);
-        choice = input.nextInt();
-
-        System.out.println("Enter a new title for task " + choice + " :" );
-        Scanner nameInput = new Scanner(System.in);
-        taskName = nameInput.nextLine();
-
-        if(!(taskName.length() >= 1)){
-            System.out.println("WARNING: Task Title must be at least 1 character long. Task not edited.");
-            return;
+        try{
+            taskList.get(choice);
+        }catch (IndexOutOfBoundsException ex) {
+            System.out.println("Invalid selection.\nTask number does not exist.\nEdit not completed\n");
+            throw ex;
         }
-
-        System.out.println("Enter a new description for task " + choice + " :");
-        Scanner descriptionInput = new Scanner (System.in);
-        description = descriptionInput.nextLine();
-
-        System.out.println("Enter a new task due date (YYYY-MM-DD) for task " + choice + " :");
-        Scanner dueDateInput = new Scanner(System.in);
-        dueDate = dueDateInput.nextLine();
-
-        TaskItem editedItem = new TaskItem(taskName, dueDate, description, false);
-
-        taskList.set(choice, editedItem);
-
-    }
-
-    public void removeItem(ArrayList<TaskItem> taskList){
-
-        viewList(taskList);
-        int choice;
-
-        System.out.println("Which task will you remove?");
-        Scanner input = new Scanner(System.in);
-        choice = input.nextInt();
-
-        taskList.remove(choice);
-
-    }
-
-    public void markCompleted(ArrayList<TaskItem> taskList){
-
-        int choice;
-        int counter = 0;
-
-        viewUncompletedList(taskList);
-
-        for(int i = 0; i < taskList.size(); i++){
-            if(!taskList.get(i).isCompleted()){
-                counter++;
+        finally{
+            if(choice > taskList.size() || choice < 0){
+                return;
             }
+
+            System.out.println("Enter a new title for task " + choice + " :" );
+            Scanner nameInput = new Scanner(System.in);
+            taskName = nameInput.nextLine();
+
+            if(!(taskName.length() >= 1)){
+                System.out.println("WARNING: Task Title must be at least 1 character long. Task not edited.");
+                return;
+            }
+
+            System.out.println("Enter a new description for task " + choice + " :");
+            Scanner descriptionInput = new Scanner (System.in);
+            description = descriptionInput.nextLine();
+
+            System.out.println("Enter a new task due date (YYYY-MM-DD) for task " + choice + " :");
+            Scanner dueDateInput = new Scanner(System.in);
+            dueDate = dueDateInput.nextLine();
+
+            if (!(dueDate.matches("....-..-.."))) {
+                System.out.println("Date is in improper format.\nRemember to include dashes and use proper YYYY-MM-DD formatting.\nTask not edited.");
+                return;
+            }
+
+            Date currentDate = new Date();
+            Date inputDate = null;
+            try {
+                inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(dueDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if(currentDate.after(inputDate)){
+                System.out.println("Date is in the past. Task not edited.");
+                return;
+            }
+
+            TaskItem editedItem = new TaskItem(taskName, dueDate, description, false);
+
+            taskList.set(choice, editedItem);
         }
-
-        if(counter == 0){
-            return;
-        }
-
-        System.out.println("Which task will you mark as completed?");
-        Scanner input = new Scanner(System.in);
-        choice = input.nextInt();
-
-        taskList.get(choice).setCompleted();
 
     }
 
-    public void unmarkCompleted(ArrayList<TaskItem> taskList){
+    public void removeItem(ArrayList<TaskItem> taskList, int choice) throws IndexOutOfBoundsException{
 
-        int choice;
-        int counter = 0;
-
-        viewCompletedList(taskList);
-
-        for(int i = 0; i < taskList.size(); i++){
-            if(taskList.get(i).isCompleted()){
-                counter++;
+        try{
+            taskList.get(choice);
+        }
+        catch(IndexOutOfBoundsException ex){
+            System.out.println("Invalid selection.\nTask number does not exist.\nTask not removed.\n");
+            throw ex;
+        }
+        finally{
+            if(choice > taskList.size() || choice < 0){
+                return;
             }
+            taskList.remove(choice);
         }
 
-        if(counter == 0){
-            return;
+
+
+    }
+
+    public void markCompleted(ArrayList<TaskItem> taskList, int choice){
+        try{
+            taskList.get(choice);
         }
+        catch (IndexOutOfBoundsException ex){
+            System.out.println("Invalid selection.\nTask number does not exist.\nNo task marked as completed.\n");
+            throw ex;
+        }
+        finally{
+            if(choice > taskList.size() || choice < 0){
+                return;
+            }
+            taskList.get(choice).setCompleted();
+        }
+    }
 
-        System.out.println("Which task will you unmark as completed?");
-        Scanner input = new Scanner(System.in);
-        choice = input.nextInt();
+    public void unmarkCompleted(ArrayList<TaskItem> taskList, int choice){
 
-        taskList.get(choice).unsetCompleted();
+        try{
+            taskList.get(choice);
+        }
+        catch (IndexOutOfBoundsException ex){
+            System.out.println("Invalid selection.\n Task number does not exist.\nTask not unmarked as completed.\n");
+            throw ex;
+        }
+        finally{
+            if(choice > taskList.size() || choice < 0){
+                return;
+            }
+            taskList.get(choice).unsetCompleted();
+        }
 
     }
 
     public void saveList(ArrayList<TaskItem> taskList){
 
         String fileName;
+
+        if(taskList.size() == 0){
+            System.out.println("You have nothing in your list to save.\nTry adding something.\n");
+            return;
+        }
 
         System.out.println("Enter the filename to save as including .txt extension: ");
         Scanner input = new Scanner(System.in);
@@ -305,6 +382,11 @@ public class TaskList {
                 taskName = fileReader.nextLine();
                 description = fileReader.nextLine();
 
+                if(taskName.length() == 0){
+                    System.out.println("\nInvalid task name detected in file. Stopping file load.\n");
+                    return;
+                }
+
                 dueDate = dueDate.replace("[", "");
                 dueDate = dueDate.replace("]", "");
                 if(isCompleted.contains("true")){
@@ -321,8 +403,13 @@ public class TaskList {
 
             menu();
 
-        } catch (FileNotFoundException e) {
-            System.out.println("Could not load file");
+        }catch (FileNotFoundException e) {
+            System.out.println("Could not load file.\nCheck capitalization and make sure you added .txt");
+            try {
+                throw e;
+            } catch (FileNotFoundException fileNotFoundException) {
+                return;
+            }
         }
     }
 

@@ -37,6 +37,18 @@ public class TaskItem {
         this.description = description;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public String toStringFile() {
         return "[" + dueDate + "]\n" + name + "\n" + description;
     }

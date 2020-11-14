@@ -1,9 +1,10 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 import static java.lang.System.exit;
 
 public class App {
-    public static void main (String[] args){
+    public static void main (String[] args) throws FileNotFoundException{
 
         Scanner userInput = new Scanner(System.in);
         String menuChoice = "";
