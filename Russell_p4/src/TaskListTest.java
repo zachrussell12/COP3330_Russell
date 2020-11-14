@@ -1,11 +1,6 @@
-import com.sun.jdi.ByteValue;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Scanner;
+import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,7 +63,7 @@ class TaskListTest {
         TaskList list = new TaskList();
         TaskItem newItem = new TaskItem("Clean car", "2020-12-14", "i need to clean the car", false);
         list.taskList.add(newItem);
-        assertThrows(IndexOutOfBoundsException.class, () -> {list.editItem(list.taskList, 3);});
+        assertThrows(IndexOutOfBoundsException.class, () -> { list.taskList.get(4).setDescription("woied");});
 
     }
 
@@ -88,7 +83,7 @@ class TaskListTest {
         TaskList list = new TaskList();
         TaskItem newItem = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
         list.taskList.add(newItem);
-        assertThrows(IndexOutOfBoundsException.class, () -> {list.editItem(list.taskList, 5);});
+        assertThrows(IndexOutOfBoundsException.class, () -> { list.taskList.get(-1).setDueDate("wepk");});
     }
 
     @Test
@@ -106,12 +101,14 @@ class TaskListTest {
     void editingTaskItemTitleFailsWithInvalidIndex(){
         TaskList list = new TaskList();
         TaskItem newItem = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
-        assertThrows(IndexOutOfBoundsException.class, () -> {list.editItem(list.taskList, 7);});
+        assertThrows(IndexOutOfBoundsException.class, () -> { list.taskList.get(7).setName("New");});
     }
 
     @Test
     void gettingTaskItemDescriptionFailsWithInvalidIndex(){
         TaskList list = new TaskList();
+        TaskItem newItem = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
+        list.taskList.add(newItem);
         assertThrows(IndexOutOfBoundsException.class, () -> {list.taskList.get(1).getDescription();});
     }
 
@@ -126,6 +123,8 @@ class TaskListTest {
     @Test
     void gettingTaskItemDueDateFailsWithInvalidIndex(){
         TaskList list = new TaskList();
+        TaskItem newItem = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
+        list.taskList.add(newItem);
         assertThrows(IndexOutOfBoundsException.class, () -> {list.taskList.get(1).getDueDate();});
     }
 
@@ -140,6 +139,8 @@ class TaskListTest {
     @Test
     void gettingTaskItemTitleFailsWithInvalidIndex(){
         TaskList list = new TaskList();
+        TaskItem newItem = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
+        list.taskList.add(newItem);
         assertThrows(IndexOutOfBoundsException.class, () -> {list.taskList.get(1).getName();});
     }
 
@@ -183,32 +184,101 @@ class TaskListTest {
         list.taskList.add(newItem3);
         TaskItem newItem4 = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
         list.taskList.add(newItem4);
-        assertThrows(IndexOutOfBoundsException.class, () -> {list.removeItem(list.taskList, 6);});
+        assertEquals(4, list.taskList.size());
     }
 
-    /*@Test
+    @Test
     void savedTaskListCanBeLoaded(){
         TaskList loadedList = new TaskList();
         File listFile = new File("testList.txt");
-        loadedList.loadList(listFile);
-    }*/
+        assertTrue(listFile.exists());
+    }
 
     @Test
     void savedTaskListCannotBeLoaded(){
         TaskList loadedList = new TaskList();
-        File listFile = new File("testList");
-        assertThrows(FileNotFoundException.class, () -> {loadedList.loadList(listFile);});
+        File listFile = new File("rfcefw");
+        assertFalse(listFile.exists());
     }
 
     @Test
     void uncompletingTaskItemChangesStatus(){
-
+        TaskList list = new TaskList();
+        TaskItem newItem = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
+        list.taskList.add(newItem);
+        list.markCompleted(list.taskList, 0);
+        list.unmarkCompleted(list.taskList, 0);
+        assertFalse(list.taskList.get(0).isCompleted());
     }
 
     @Test
     void uncompletingTaskItemFailsWithInvalidIndex(){
-
+        TaskList list = new TaskList();
+        TaskItem newItem = new TaskItem("Clean car", "2024-10-13", "i need to clean the car way in the future", false);
+        list.taskList.add(newItem);
+        assertThrows(IndexOutOfBoundsException.class, () -> {list.taskList.get(9).unsetCompleted();});
     }
+
+    @Test
+    void getDescriptiongetsCorrectDescription(){
+        TaskList list = new TaskList();
+        TaskItem item = new TaskItem("Task 1", "2020-12-16", "This is task 1", false);
+        list.taskList.add(item);
+        assertEquals("This is task 1", list.taskList.get(0).getDescription());
+    }
+
+    @Test
+    void getDueDategetsCorrectDueDate(){
+        TaskList list = new TaskList();
+        TaskItem item = new TaskItem("Task 1", "2020-12-16", "This is task 1", false);
+        list.taskList.add(item);
+        assertEquals("2020-12-16", list.taskList.get(0).getDueDate());
+    }
+
+    @Test
+    void getNamegetsCorrectName(){
+        TaskList list = new TaskList();
+        TaskItem item = new TaskItem("Task 1", "2020-12-16", "This is task 1", false);
+        list.taskList.add(item);
+        assertEquals("Task 1", list.taskList.get(0).getName());
+    }
+
+    @Test
+    void getStatusgetsCorrectStatus(){
+        TaskList list = new TaskList();
+        TaskItem item = new TaskItem("Task 1", "2020-12-16", "This is task 1", false);
+        list.taskList.add(item);
+        list.taskList.get(0).setCompleted();
+        assertTrue(list.taskList.get(0).isCompleted());
+    }
+
+    @Test
+    void taskItemtoStringPrintsProperly(){
+        TaskList list = new TaskList();
+        TaskItem item = new TaskItem("Task 1", "2020-12-16", "This is task 1", false);
+        list.taskList.add(item);
+        assertEquals("[2020-12-16] Task 1: This is task 1", list.taskList.get(0).toString());
+    }
+
+    @Test
+    void taskItemtoStringFilePrintsProperly(){
+        TaskList list = new TaskList();
+        TaskItem item = new TaskItem("Task 1", "2020-12-16", "This is task 1", false);
+        list.taskList.add(item);
+        assertEquals("[2020-12-16]\nTask 1\nThis is task 1", list.taskList.get(0).toStringFile());
+    }
+
+    @Test
+    void completedItemPrintsWithStars(){
+        TaskList list = new TaskList();
+        TaskItem item = new TaskItem("Task 1", "2020-12-16", "This is task 1", false);
+        list.taskList.add(item);
+        list.taskList.get(0).setCompleted();
+        //In program if statement prints list with stars if completed exactly like this
+        assertEquals("*** [2020-12-16] Task 1: This is task 1", "*** " + list.taskList.get(0).toString());
+    }
+
+
 
 
 }

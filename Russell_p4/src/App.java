@@ -4,7 +4,7 @@ import java.util.Scanner;
 import static java.lang.System.exit;
 
 public class App {
-    public static void main (String[] args) throws FileNotFoundException{
+    public static void main (String[] args){
 
         Scanner userInput = new Scanner(System.in);
         String menuChoice = "";
