@@ -1,3 +1,6 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class TaskItem {
 
@@ -8,15 +11,37 @@ public class TaskItem {
 
     public TaskItem(String inputName, String inputDueDate, String inputDescription, boolean completion) throws IllegalArgumentException{
         IllegalArgumentException e = null;
-        if(inputName.length() < 1){
-            System.out.println("WARNING: Task Title must be at least 1 character long.\nTask not created.");
+
+        boolean checker = dateNameChecker(inputName, inputDueDate);
+
+        if(!checker){
             throw e;
         }
+
         this.name = inputName;
         this.dueDate = inputDueDate;
         this.description = inputDescription;
         this.isCompleted = completion;
 
+    }
+
+    public boolean dateNameChecker(String inputName, String inputDueDate){
+        if(inputName.length() < 1){System.out.println("WARNING: Task Title must be at least 1 character long.\nTask not created."); return false;}
+
+        if (!(inputDueDate.matches("....-..-.."))) {System.out.println("Date is in improper format.\nRemember to include dashes and use proper YYYY-MM-DD formatting.\nTask not created."); return false;}
+
+        if((inputDueDate.charAt(5) == '1' && inputDueDate.charAt(6) == '3') || (inputDueDate.charAt(5) == '1' && inputDueDate.charAt(6) == '4') || (inputDueDate.charAt(5) == '1' && inputDueDate.charAt(6) == '5') || (inputDueDate.charAt(5) == '1' && inputDueDate.charAt(6) == '6') || (inputDueDate.charAt(5) == '1' && inputDueDate.charAt(6) == '7') || (inputDueDate.charAt(5) == '1' && inputDueDate.charAt(6) == '8') || (inputDueDate.charAt(5) == '1' && inputDueDate.charAt(6) == '9')){
+            System.out.println("Date invalid. There are only 12 months.\nTask not created.");
+            return false;
+        }
+
+        Date currentDate = new Date();
+        Date inputDate = null;
+        try {inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(inputDueDate);} catch (ParseException er) {er.getMessage();}
+
+        if(currentDate.after(inputDate)){System.out.println("Date is in the past. Task not created."); return false;}
+
+        return true;
     }
 
     public boolean isCompleted() {
@@ -26,6 +51,7 @@ public class TaskItem {
     public void unsetCompleted(){
         this.isCompleted = false;
     }
+
     public void setCompleted() {
         this.isCompleted = true;
     }

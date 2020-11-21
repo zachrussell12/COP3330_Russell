@@ -119,29 +119,6 @@ public class TaskApp {
         System.out.println("Task due date (YYYY-MM-DD): ");
         dueDate = userInput.nextLine();
 
-        if (!(dueDate.matches("....-..-.."))) {
-            System.out.println("Date is in improper format.\nRemember to include dashes and use proper YYYY-MM-DD formatting.\nTask not created.");
-            return;
-        }
-
-        if((dueDate.charAt(5) == '1' && dueDate.charAt(6) == '3') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '4') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '5') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '6') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '7') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '8') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '9')){
-            System.out.println("Date invalid. There are only 12 months.\nTask not created.");
-            return;
-        }
-
-        Date currentDate = new Date();
-        Date inputDate = null;
-        try {
-            inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(dueDate);
-        } catch (ParseException e) {
-            e.getMessage();
-        }
-
-        if(currentDate.after(inputDate)){
-            System.out.println("Date is in the past. Task not created.");
-            return;
-        }
-
         try {
             TaskItem addItem = new TaskItem(taskName, dueDate, description, false);
             list.add(addItem);
@@ -182,32 +159,8 @@ public class TaskApp {
         System.out.println("Enter a new due date (YYYY-MM-DD) for task " + choice + ": ");
         dueDate = userInput.nextLine();
 
-        if (!(dueDate.matches("....-..-.."))) {
-            System.out.println("Date is in improper format.\nRemember to include dashes and use proper YYYY-MM-DD formatting.\nTask not edited.");
-            return;
-        }
-
-        if((dueDate.charAt(5) == '1' && dueDate.charAt(6) == '3') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '4') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '5') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '6') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '7') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '8') || (dueDate.charAt(5) == '1' && dueDate.charAt(6) == '9')){
-            System.out.println("Date invalid. There are only 12 months.\nTask not edited.");
-            return;
-        }
-
-        Date currentDate = new Date();
-        Date inputDate = null;
-        try {
-            inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(dueDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if(currentDate.after(inputDate)){
-            System.out.println("Date is in the past. Task not edited.");
-            return;
-        }
-
         try{
-            TaskItem editedItem = new TaskItem(taskName, dueDate, description, false);
-            list.set(editedItem, choice);
+            list.set(new TaskItem(taskName, dueDate, description, false), choice);
         }
         catch(NullPointerException ex){
             System.out.println("Task name is too short");
@@ -258,7 +211,7 @@ public class TaskApp {
         }
 
         try{
-            list.get(choice).setCompleted();
+            list.setCompleted(choice);
         }
         catch(IndexOutOfBoundsException e){
             System.out.println("Task choice does not exist.");
@@ -288,7 +241,7 @@ public class TaskApp {
         }
 
         try{
-            list.get(choice).unsetCompleted();
+            list.unsetCompleted(choice);
         }
         catch(IndexOutOfBoundsException e){
             System.out.println("Task choice does not exist");
@@ -313,16 +266,19 @@ public class TaskApp {
 
     public void loadFile(){
 
-
+        TaskList loadedList = new TaskList();
+        String fileName;
+        System.out.println("Please enter the name of your file including the .txt extension: ");
+        fileName = userInput.nextLine();
+        try{
+            loadedList.loadFile(fileName);
+        }
+        catch(NullPointerException e){
+            System.out.println("Check your spelling, add .txt, and try again.");
+            return;
+        }
+        list = loadedList;
+        listInteraction();
     }
 
 }
-
-/*
-System.out.println("Enter the file name to load (including the .txt extension): ");
-                Scanner userInputFile = new Scanner(System.in);
-                String fileName = userInputFile.nextLine();
-                TaskList loadedList = new TaskList();
-                File listFile = new File(fileName);
-                loadedList.loadList(listFile);
- */

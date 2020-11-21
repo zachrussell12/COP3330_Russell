@@ -1,31 +1,36 @@
+import com.sun.tools.javac.Main;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 public class TaskList {
-    private List<TaskItem> itemList;
+    private List<TaskItem> taskList;
 
-    public TaskList(){this.itemList = new ArrayList<>();}
+    public TaskList(){this.taskList = new ArrayList<>();}
 
     public String view(){
         System.out.println("Current Tasks");
         System.out.println("-------------");
         System.out.println();
 
-        if(itemList.size() == 0){
+        if(taskList.size() == 0){
             return "No items in list";
         }
 
         String list = "";
 
-        for(int i = 0; i < itemList.size(); i++){
-            if(itemList.get(i).isCompleted()){
-                list += i + ") *** " + itemList.get(i).toString() + "\n";
+        for(int i = 0; i < taskList.size(); i++){
+            if(taskList.get(i).isCompleted()){
+                list += i + ") *** " + taskList.get(i).toString() + "\n";
             }
             else {
-                list += i + ") " + itemList.get(i).toString() + "\n";
+                list += i + ") " + taskList.get(i).toString() + "\n";
             }
         }
 
@@ -40,9 +45,9 @@ public class TaskList {
         String incompleteList = "";
         int counter = 0;
 
-        for(int i = 0; i < itemList.size(); i++){
-            if(!(itemList.get(i).isCompleted())){
-                incompleteList += i + ") " + itemList.get(i).toString() + "\n";
+        for(int i = 0; i < taskList.size(); i++){
+            if(!(taskList.get(i).isCompleted())){
+                incompleteList += i + ") " + taskList.get(i).toString() + "\n";
                 counter++;
             }
         }
@@ -62,9 +67,9 @@ public class TaskList {
         String completedList = "";
         int counter = 0;
 
-        for(int i = 0; i < itemList.size(); i++){
-            if(itemList.get(i).isCompleted()){
-                completedList += i + ") *** " + itemList.get(i).toString() + "\n";
+        for(int i = 0; i < taskList.size(); i++){
+            if(taskList.get(i).isCompleted()){
+                completedList += i + ") *** " + taskList.get(i).toString() + "\n";
                 counter++;
             }
         }
@@ -77,23 +82,27 @@ public class TaskList {
     }
 
     public void add(TaskItem task){
-        itemList.add(task);
+        taskList.add(task);
     }
 
     public void set(TaskItem task, int index){
-        itemList.set(index, task);
+        taskList.set(index, task);
     }
 
     public void remove(int index){
-        itemList.remove(index);
+        taskList.remove(index);
     }
 
     public int size(){
-        return itemList.size();
+        return taskList.size();
     }
 
+    public void setCompleted(int choice){taskList.get(choice).setCompleted();}
+
+    public void unsetCompleted(int choice){taskList.get(choice).unsetCompleted();}
+
     public TaskItem get(int index){
-        return itemList.get(index);
+        return taskList.get(index);
     }
 
     public void saveFile(String fileName){
@@ -102,13 +111,13 @@ public class TaskList {
 
         try{
             FileWriter taskWriter = new FileWriter(savedFile);
-            taskWriter.write(itemList.size() + "\n");
-            for(int i = 0; i < itemList.size(); i++){
-                if(itemList.get(i).isCompleted()){
-                    taskWriter.write("true\n" + itemList.get(i).toStringFile() + "\n");
+            taskWriter.write(taskList.size() + "\n");
+            for(int i = 0; i < taskList.size(); i++){
+                if(taskList.get(i).isCompleted()){
+                    taskWriter.write("true\n" + taskList.get(i).toStringFile() + "\n");
                 }
                 else {
-                    taskWriter.write("false\n" + itemList.get(i).toStringFile() + "\n");
+                    taskWriter.write("false\n" + taskList.get(i).toStringFile() + "\n");
                 }
             }
 
@@ -118,6 +127,50 @@ public class TaskList {
         catch(IOException e){
             System.out.println("A file error occured.\nCould not save task list.");
         }
+    }
+
+    public void loadFile(String fileName){
+        String taskName;
+        String dueDate;
+        String description;
+        String isCompleted;
+        boolean taskDone;
+        int listSize = 0;
+
+        File listFile = new File(fileName);
+        Scanner fileReader = null;
+        try {
+            fileReader = new Scanner(listFile);
+        } catch (FileNotFoundException e) {
+            System.out.println("File does not exist.");
+        }
+
+        listSize = fileReader.nextInt();
+        fileReader.nextLine();
+
+        for(int i = 0; i < listSize; i++){
+            isCompleted = fileReader.nextLine();
+            dueDate = fileReader.nextLine();
+            taskName = fileReader.nextLine();
+            description = fileReader.nextLine();
+
+            if(isCompleted.contains("true")){
+                taskDone = true;
+            }
+            else{
+                taskDone = false;
+            }
+
+            try{
+                TaskItem newItem = new TaskItem(taskName, dueDate, description, taskDone);
+                this.add(newItem);
+            }
+            catch(InputMismatchException err){
+                System.out.println("An invalid task name was found in the file. List not loaded");
+                return;
+            }
+        }
+
     }
 
 }
