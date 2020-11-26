@@ -161,7 +161,12 @@ public class ContactApp {
     public void removeItem(){
 
         int choice;
+
         viewList();
+        if(list.size() == 0){
+            System.out.println("\nNo items removed.");
+            return;
+        }
         System.out.println("Which contact would you like to remove?");
 
         try{

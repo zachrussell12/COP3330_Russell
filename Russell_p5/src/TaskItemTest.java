@@ -75,5 +75,23 @@ public class TaskItemTest {
         list.set(editedItem, 0);
         assertEquals("Task 2", list.get(0).getName());
     }
+
+    @Test
+    void dateNameCheckerReturnsAppropriateFalsewithInvalidName(){
+        TaskItem newItem = new TaskItem("Task 1", "2020-12-12", "This is task 1", false);
+        assertFalse(newItem.dateNameChecker("", "2020-12-12"));
+    }
+
+    @Test
+    void dateNameCheckerReturnsAppropriateFalsewithInvalidDate(){
+        TaskItem newItem = new TaskItem("Task 1", "2020-12-12", "This is task 1", false);
+        assertFalse(newItem.dateNameChecker("Task 1", "2020-12-122"));
+    }
+
+    @Test
+    void dateNameCheckerReturnsAppropriateTrue(){
+        TaskItem newItem = new TaskItem("Task 1", "2020-12-12", "This is task 1", false);
+        assertTrue(newItem.dateNameChecker("Task 1", "2020-12-12"));
+    }
 }
 

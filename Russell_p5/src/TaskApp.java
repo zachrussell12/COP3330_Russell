@@ -166,7 +166,14 @@ public class TaskApp {
 
     public void removeItem(){
         int choice;
+
         viewList();
+
+        if(list.size() == 0){
+            System.out.println("\nNo items removed.");
+            return;
+        }
+
         System.out.println("Which item would you like to remove?");
         try {
             choice = userInput.nextInt();
