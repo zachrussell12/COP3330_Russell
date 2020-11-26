@@ -27,7 +27,7 @@ public class MainApplication {
             }
             else if(value == 2){
                 ContactApp run = new ContactApp();
-                //run.appMenu();
+                run.appMenu();
             }
             else if(value == 3){
                 exit(0);

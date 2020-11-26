@@ -1,13 +1,5 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import static java.lang.System.exit;
 
 public class TaskApp {
 
@@ -59,8 +51,13 @@ public class TaskApp {
 
         while(choice != 8){
             listMenu();
-            choice = userInput.nextInt();
-            userInput.nextLine();
+            try {
+                choice = userInput.nextInt();
+                userInput.nextLine();
+            }catch(InputMismatchException er){
+                System.out.println("Invalid choice made. Please try again.\n");
+                userInput.nextLine();
+            }
 
             if(choice == 1){
                 viewList();
@@ -85,9 +82,6 @@ public class TaskApp {
             }
             else if(choice == 8){
                 break;
-            }
-            else {
-                System.out.println("Invalid choice made. Please try again.\n");
             }
         }
     }

@@ -1,5 +1,3 @@
-import com.sun.tools.javac.Main;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -97,9 +95,15 @@ public class TaskList {
         return taskList.size();
     }
 
-    public void setCompleted(int choice){taskList.get(choice).setCompleted();}
+    public void setCompleted(int choice){
+        try{taskList.get(choice).setCompleted();}
+        catch(IndexOutOfBoundsException e){throw e;}
+    }
 
-    public void unsetCompleted(int choice){taskList.get(choice).unsetCompleted();}
+    public void unsetCompleted(int choice){
+        try{taskList.get(choice).unsetCompleted();}
+        catch(IndexOutOfBoundsException er){throw er;}
+    }
 
     public TaskItem get(int index){
         return taskList.get(index);
