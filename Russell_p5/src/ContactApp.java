@@ -192,6 +192,7 @@ public class ContactApp {
 
         if(list.size() == 0){
             System.out.println("You have no contacts to save.\nTry adding something.\n");
+            return;
         }
 
         System.out.println("Enter the filename to save as including the .txt extension: ");

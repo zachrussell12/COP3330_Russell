@@ -94,7 +94,7 @@ public class ContactList {
                 ContactItem newItem = new ContactItem(firstName, lastName, phoneNumber, emailAddress);
                 this.add(newItem);
             }
-            catch(InputMismatchException err){
+            catch(IllegalArgumentException err){
                 System.out.println("An invalid task name was found in the file. List not loaded");
                 return;
             }

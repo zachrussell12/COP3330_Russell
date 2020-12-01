@@ -93,13 +93,32 @@ public class ContactItemTest {
 
     @Test
     void nameCheckerReturnsAppropriateFalse(){
-        ContactItem newItem = new ContactItem("A", "S", "D", "F");
-        assertFalse(newItem.nameChecker("","","",""));
+        ContactItem newItem = new ContactItem("A", "S", "123-123-1234", "F@gmail.com");
+        boolean check = newItem.nameChecker("","","","");
+        assertFalse(check);
     }
 
     @Test
     void nameCheckerReturnsAppropriateTrue(){
-        ContactItem newItem = new ContactItem("A", "S", "D", "F");
-        assertTrue(newItem.nameChecker("A","S","D","F"));
+        ContactItem newItem = new ContactItem("A", "S", "123-123-1244", "F@gmail.com");
+        assertTrue(newItem.nameChecker("A","S","213-123-2341","F@gmail.com"));
+    }
+
+    @Test
+    void nameCheckerReturnsAppropriateFalseWithBadPhoneNumberFormat(){
+        ContactItem newItem = new ContactItem("A", "S", "123-123-1234", "F@gmail.com");
+        assertFalse(newItem.nameChecker("A","S","812-3321-2134","F@gmail.com"));
+    }
+
+    @Test
+    void nameCheckerReturnsAppropriateFalseWithBadEmail(){
+        ContactItem newItem = new ContactItem("A", "S", "123-123-1234", "F@gmail.com");
+        assertFalse(newItem.nameChecker("A","S","812-331-2213","Fgmail.com"));
+    }
+
+    @Test
+    void nameCheckerReturnsAppropriateFalseWithLettersInPhoneNumber(){
+        ContactItem newItem = new ContactItem("A", "S", "123-123-1234", "F@gmail.com");
+        assertFalse(newItem.nameChecker("A","S","812-331-wq13","F@gmail.com"));
     }
 }

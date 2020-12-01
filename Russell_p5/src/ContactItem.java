@@ -10,7 +10,6 @@ public class ContactItem {
         boolean contactChecker = nameChecker(inputFirstName, inputLastName, inputPhoneNumber, inputAddress);
 
         if(!contactChecker){
-            System.out.println("Contact must contain at least one of the fields prompted.");
             throw new IllegalArgumentException();
         }
 
@@ -21,12 +20,43 @@ public class ContactItem {
     }
 
     public boolean nameChecker(String one, String two, String three, String four){
-        if(one.length() < 1 && two.length() < 1 && three.length() < 1 && four.length() < 1){
+
+        if(one.length() == 0 && two.length() == 0 && three.length() == 0 && four.length() == 0){
+            System.out.println("Contact must contain at least one of the fields prompted.");
             return false;
         }
-        else{
-            return true;
+
+        if(four.length() != 0) {
+            int counter = 0;
+
+            for (int j = 0; j < four.length(); j++) {
+                if (four.charAt(j) == '@') {
+                    counter++;
+                }
+            }
+
+            if (counter != 1) {
+                System.out.println("Email invalid.\nPlease include an @ and any domain below:\n.com\n.net\n.gov\n.edu\n.org");
+                return false;
+            }
         }
+
+        if(three.length() != 0) {
+            if (!three.matches("...-...-....")) {
+                System.out.println("Phone number invalid.\nPlease include dashes in the format XXX-XXX-XXXX.");
+                return false;
+            }
+
+            for (int i = 0; i < three.length(); i++) {
+                if ((three.charAt(i) >= 'a' && three.charAt(i) <= 'z') || (three.charAt(i) >= 'A' && three.charAt(i) <= 'Z')) {
+                    System.out.println("Phone number invalid.\nPlease include only numbers.");
+                    return false;
+                }
+            }
+        }
+
+        return true;
+
     }
 
     public String getFirstName() {
